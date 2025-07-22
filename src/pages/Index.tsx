@@ -43,6 +43,7 @@ const Index = () => {
   };
 
   const handleStationClick = (stationId: number) => {
+    console.log('Station clicked:', stationId);
     setSelectedStationId(stationId);
     setActiveTab('stations');
     setStationSearch('');
@@ -145,34 +146,34 @@ const Index = () => {
                       title={`Перейти к станции ${station.name}`}
                     >
                       {/* Main Circle */}
-                      <div className={`relative w-16 h-16 rounded-full border-4 flex flex-col items-center justify-center text-white font-bold text-xs shadow-lg ${
+                      <div className={`relative w-16 h-16 rounded-full border-4 flex flex-col items-center justify-center text-white font-bold text-xs shadow-lg pointer-events-none ${
                         station.stationStatus === 'available' ? 'bg-green-500 border-green-600' : 
                         station.stationStatus === 'occupied' ? 'bg-yellow-500 border-yellow-600' : 'bg-red-500 border-red-600'
                       }`}>
-                        <div className="text-[10px] font-bold">{station.power}</div>
-                        <div className="text-[8px] opacity-90">{station.type}</div>
+                        <div className="text-[10px] font-bold pointer-events-none">{station.power}</div>
+                        <div className="text-[8px] opacity-90 pointer-events-none">{station.type}</div>
                         
                         {/* Status Ring */}
-                        <div className={`absolute -top-1 -left-1 w-18 h-18 rounded-full border-2 ${
+                        <div className={`absolute -top-1 -left-1 w-18 h-18 rounded-full border-2 pointer-events-none ${
                           station.stationStatus === 'available' ? 'border-green-400' : 
                           station.stationStatus === 'occupied' ? 'border-yellow-400' : 'border-red-400'
                         } opacity-50 animate-pulse`}></div>
                         
                         {/* Connector Status Dots */}
-                        <div className="absolute -bottom-2 flex space-x-1">
-                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector1)} border border-white`}></div>
-                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector2)} border border-white`}></div>
-                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector3)} border border-white`}></div>
+                        <div className="absolute -bottom-2 flex space-x-1 pointer-events-none">
+                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector1)} border border-white pointer-events-none`}></div>
+                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector2)} border border-white pointer-events-none`}></div>
+                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector3)} border border-white pointer-events-none`}></div>
                         </div>
                       </div>
                       
                       {/* Station Name */}
-                      <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white px-2 py-1 rounded shadow-md border text-xs font-medium whitespace-nowrap">
+                      <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white px-2 py-1 rounded shadow-md border text-xs font-medium whitespace-nowrap pointer-events-none">
                         {station.name}
                       </div>
                       
                       {/* Connection Line */}
-                      <div className="absolute top-full left-1/2 w-px h-2 bg-gray-400 transform -translate-x-1/2"></div>
+                      <div className="absolute top-full left-1/2 w-px h-2 bg-gray-400 transform -translate-x-1/2 pointer-events-none"></div>
                     </div>
                   ))}
 
