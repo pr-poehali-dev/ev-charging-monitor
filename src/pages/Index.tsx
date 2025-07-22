@@ -4,11 +4,12 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import StationDetailCard from '@/components/StationDetailCard';
 
 const Index = () => {
   const [stationSearch, setStationSearch] = useState('');
   const [sessionSearch, setSessionSearch] = useState('');
-  const [activeTab, setActiveTab] = useState('map');
+  const [activeTab, setActiveTab] = useState<'map' | 'cars' | 'stations' | 'station-detail'>('map');
   const [selectedStationId, setSelectedStationId] = useState<number | null>(null);
 
   const stations = [
@@ -45,15 +46,12 @@ const Index = () => {
   const handleStationClick = (stationId: number) => {
     console.log('Station clicked:', stationId);
     setSelectedStationId(stationId);
-    setActiveTab('stations');
-    setStationSearch('');
-    // Scroll to station after tab change
-    setTimeout(() => {
-      const element = document.getElementById(`station-${stationId}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 100);
+    setActiveTab('station-detail');
+  };
+
+  const handleStationListClick = (stationId: number) => {
+    setSelectedStationId(stationId);
+    setActiveTab('station-detail');
   };
 
   const filteredStations = stations.filter(station =>
@@ -85,7 +83,7 @@ const Index = () => {
 
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className={`grid w-full ${activeTab === 'station-detail' ? 'grid-cols-4' : 'grid-cols-3'} mb-6`}>
             <TabsTrigger value="map" className="flex items-center space-x-2">
               <Icon name="Map" size={16} />
               <span>Карта станций</span>
@@ -228,11 +226,12 @@ const Index = () => {
                     <div 
                       key={station.id} 
                       id={`station-${station.id}`}
-                      className={`border rounded-lg p-4 hover:bg-gray-50 transition-all duration-300 ${
+                      className={`border rounded-lg p-4 hover:bg-gray-50 transition-all duration-300 cursor-pointer ${
                         selectedStationId === station.id 
                           ? 'ring-2 ring-blue-500 bg-blue-50 border-blue-300' 
                           : ''
                       }`}
+                      onClick={() => handleStationListClick(station.id)}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-semibold text-lg">{station.name}</h3>
@@ -335,6 +334,16 @@ const Index = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Station Detail Tab */}
+          <TabsContent value="station-detail">
+            {selectedStationId && (
+              <StationDetailCard
+                station={stations.find(s => s.id === selectedStationId) || stations[0]}
+                onBack={() => setActiveTab('stations')}
+              />
+            )}
           </TabsContent>
         </Tabs>
       </div>
