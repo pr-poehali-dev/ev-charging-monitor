@@ -22,9 +22,11 @@ const Index = () => {
   ];
 
   const mapStations = [
-    { id: 1, name: 'ЗС Центр-1', lat: 55.7558, lng: 37.6176, connector1: 'available', connector2: 'occupied', connector3: 'unavailable', stationStatus: 'available' },
-    { id: 2, name: 'ЗС Парк-2', lat: 55.7272, lng: 37.6033, connector1: 'unavailable', connector2: 'unavailable', connector3: 'unavailable', stationStatus: 'unavailable' },
-    { id: 3, name: 'ЗС Офис-3', lat: 59.9311, lng: 30.3609, connector1: 'available', connector2: 'available', connector3: 'occupied', stationStatus: 'available' }
+    { id: 1, name: 'ЗС Центр-1', lat: 55.7558, lng: 37.6176, connector1: 'available', connector2: 'occupied', connector3: 'unavailable', stationStatus: 'available', power: 150, type: 'DC' },
+    { id: 2, name: 'ЗС Парк-2', lat: 55.7272, lng: 37.6033, connector1: 'unavailable', connector2: 'unavailable', connector3: 'unavailable', stationStatus: 'unavailable', power: 50, type: 'AC' },
+    { id: 3, name: 'ЗС Офис-3', lat: 59.9311, lng: 30.3609, connector1: 'available', connector2: 'available', connector3: 'occupied', stationStatus: 'available', power: 150, type: 'DC' },
+    { id: 4, name: 'ЗС ТЦ-4', lat: 55.7400, lng: 37.6250, connector1: 'available', connector2: 'available', connector3: 'available', stationStatus: 'available', power: 22, type: 'AC' },
+    { id: 5, name: 'ЗС Аэропорт-5', lat: 55.9726, lng: 37.4146, connector1: 'occupied', connector2: 'available', connector3: 'occupied', stationStatus: 'available', power: 350, type: 'DC' }
   ];
 
   const getStatusColor = (status: string) => {
@@ -113,25 +115,45 @@ const Index = () => {
                     </div>
                   </div>
 
-                  {/* Mock Map Stations */}
+                  {/* Station Markers */}
                   {mapStations.map((station, index) => (
                     <div
                       key={station.id}
-                      className={`absolute bg-white p-3 rounded-lg shadow-md border-2 transform -translate-x-1/2 -translate-y-1/2 ${
-                        station.stationStatus === 'available' ? 'border-green-500' : 
-                        station.stationStatus === 'occupied' ? 'border-yellow-500' : 'border-red-500'
-                      }`}
+                      className="absolute transform -translate-x-1/2 -translate-y-1/2"
                       style={{
-                        left: `${20 + index * 30}%`,
-                        top: `${30 + index * 20}%`
+                        left: `${15 + index * 16}%`,
+                        top: `${25 + (index % 2) * 30 + Math.sin(index) * 15}%`
                       }}
                     >
-                      <div className="text-xs font-semibold mb-2">{station.name}</div>
-                      <div className="flex space-x-1">
-                        <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector1)}`}></div>
-                        <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector2)}`}></div>
-                        <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector3)}`}></div>
+                      {/* Main Circle */}
+                      <div className={`relative w-16 h-16 rounded-full border-4 flex flex-col items-center justify-center text-white font-bold text-xs shadow-lg ${
+                        station.stationStatus === 'available' ? 'bg-green-500 border-green-600' : 
+                        station.stationStatus === 'occupied' ? 'bg-yellow-500 border-yellow-600' : 'bg-red-500 border-red-600'
+                      }`}>
+                        <div className="text-[10px] font-bold">{station.power}</div>
+                        <div className="text-[8px] opacity-90">{station.type}</div>
+                        
+                        {/* Status Ring */}
+                        <div className={`absolute -top-1 -left-1 w-18 h-18 rounded-full border-2 ${
+                          station.stationStatus === 'available' ? 'border-green-400' : 
+                          station.stationStatus === 'occupied' ? 'border-yellow-400' : 'border-red-400'
+                        } opacity-50 animate-pulse`}></div>
+                        
+                        {/* Connector Status Dots */}
+                        <div className="absolute -bottom-2 flex space-x-1">
+                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector1)} border border-white`}></div>
+                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector2)} border border-white`}></div>
+                          <div className={`w-2 h-2 rounded-full ${getStatusColor(station.connector3)} border border-white`}></div>
+                        </div>
                       </div>
+                      
+                      {/* Station Name */}
+                      <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white px-2 py-1 rounded shadow-md border text-xs font-medium whitespace-nowrap">
+                        {station.name}
+                      </div>
+                      
+                      {/* Connection Line */}
+                      <div className="absolute top-full left-1/2 w-px h-2 bg-gray-400 transform -translate-x-1/2"></div>
                     </div>
                   ))}
 
