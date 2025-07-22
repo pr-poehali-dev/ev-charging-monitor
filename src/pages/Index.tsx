@@ -8,11 +8,15 @@ import Icon from '@/components/ui/icon';
 const Index = () => {
   const [stationSearch, setStationSearch] = useState('');
   const [sessionSearch, setSessionSearch] = useState('');
+  const [activeTab, setActiveTab] = useState('map');
+  const [selectedStationId, setSelectedStationId] = useState<number | null>(null);
 
   const stations = [
     { id: 1, name: 'ЗС Центр-1', ip: '192.168.1.101', ssh: 'admin@192.168.1.101:22', serial: 'EV001234', city: 'Москва', address: 'ул. Тверская, 1', status: 'online', lat: 55.7558, lng: 37.6176 },
     { id: 2, name: 'ЗС Парк-2', ip: '192.168.1.102', ssh: 'admin@192.168.1.102:22', serial: 'EV001235', city: 'Москва', address: 'Парк Горького', status: 'offline', lat: 55.7272, lng: 37.6033 },
-    { id: 3, name: 'ЗС Офис-3', ip: '192.168.1.103', ssh: 'admin@192.168.1.103:22', serial: 'EV001236', city: 'СПб', address: 'Невский пр., 28', status: 'online', lat: 59.9311, lng: 30.3609 }
+    { id: 3, name: 'ЗС Офис-3', ip: '192.168.1.103', ssh: 'admin@192.168.1.103:22', serial: 'EV001236', city: 'СПб', address: 'Невский пр., 28', status: 'online', lat: 59.9311, lng: 30.3609 },
+    { id: 4, name: 'ЗС ТЦ-4', ip: '192.168.1.104', ssh: 'admin@192.168.1.104:22', serial: 'EV001237', city: 'Москва', address: 'ТЦ Европейский', status: 'online', lat: 55.7400, lng: 37.6250 },
+    { id: 5, name: 'ЗС Аэропорт-5', ip: '192.168.1.105', ssh: 'admin@192.168.1.105:22', serial: 'EV001238', city: 'Москва', address: 'Шереметьево', status: 'online', lat: 55.9726, lng: 37.4146 }
   ];
 
   const sessions = [
@@ -36,6 +40,19 @@ const Index = () => {
       case 'unavailable': return 'bg-red-500';
       default: return 'bg-gray-400';
     }
+  };
+
+  const handleStationClick = (stationId: number) => {
+    setSelectedStationId(stationId);
+    setActiveTab('stations');
+    setStationSearch('');
+    // Scroll to station after tab change
+    setTimeout(() => {
+      const element = document.getElementById(`station-${stationId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   };
 
   const filteredStations = stations.filter(station =>
@@ -66,7 +83,7 @@ const Index = () => {
       </header>
 
       <div className="p-6">
-        <Tabs defaultValue="map" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="map" className="flex items-center space-x-2">
               <Icon name="Map" size={16} />
@@ -119,11 +136,13 @@ const Index = () => {
                   {mapStations.map((station, index) => (
                     <div
                       key={station.id}
-                      className="absolute transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-transform hover:scale-110"
                       style={{
                         left: `${15 + index * 16}%`,
                         top: `${25 + (index % 2) * 30 + Math.sin(index) * 15}%`
                       }}
+                      onClick={() => handleStationClick(station.id)}
+                      title={`Перейти к станции ${station.name}`}
                     >
                       {/* Main Circle */}
                       <div className={`relative w-16 h-16 rounded-full border-4 flex flex-col items-center justify-center text-white font-bold text-xs shadow-lg ${
@@ -205,7 +224,15 @@ const Index = () => {
               <CardContent>
                 <div className="space-y-4">
                   {filteredStations.map((station) => (
-                    <div key={station.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div 
+                      key={station.id} 
+                      id={`station-${station.id}`}
+                      className={`border rounded-lg p-4 hover:bg-gray-50 transition-all duration-300 ${
+                        selectedStationId === station.id 
+                          ? 'ring-2 ring-blue-500 bg-blue-50 border-blue-300' 
+                          : ''
+                      }`}
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-semibold text-lg">{station.name}</h3>
                         <Badge variant={station.status === 'online' ? 'default' : 'destructive'}>
