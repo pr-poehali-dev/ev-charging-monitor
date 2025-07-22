@@ -20,21 +20,21 @@ const StationDetailCard = ({ station, onBack }: StationDetailCardProps) => {
       power: '150 kW',
       cable: 'CABLE • ID 1',
       status: 'available',
-      icon: '/api/placeholder/80/80'
+      icon: '/img/46285768-330f-49ee-b534-f1e4a0eb43d6.jpg'
     },
     {
       type: 'GBTDC',
       power: '150 kW', 
       cable: 'CABLE • ID 2',
       status: 'available',
-      icon: '/api/placeholder/80/80'
+      icon: '/img/009e4828-2b8b-41c8-94ff-cbc246ae1b79.jpg'
     },
     {
       type: 'CHADEMO',
       power: '50 kW',
       cable: 'CABLE • ID 3', 
       status: 'charging',
-      icon: '/api/placeholder/80/80'
+      icon: '/img/55f2f8a6-f8a5-4b0d-877b-b222430ee85b.jpg'
     }
   ];
 
@@ -106,8 +106,12 @@ const StationDetailCard = ({ station, onBack }: StationDetailCardProps) => {
                         <h4 className="font-semibold">{connector.type}</h4>
                         <p className="text-sm text-gray-600">{connector.power} • {connector.cable}</p>
                       </div>
-                      <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <div className="w-12 h-12 bg-gray-400 rounded"></div>
+                      <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center overflow-hidden border">
+                        <img 
+                          src={connector.icon} 
+                          alt={`${connector.type} connector`}
+                          className="w-14 h-14 object-contain"
+                        />
                       </div>
                     </div>
                     <div className="flex gap-2">
